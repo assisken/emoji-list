@@ -1,0 +1,47 @@
+<h2 class="mb-2">Emoji list:</h2>
+
+<ul class="list-group mb-2">
+  <li class="list-group-item " *ngFor="let emoji of emojis">
+    <img
+      class="tooltip1"
+      src="{{ emoji.src }}"
+      width="25px"
+      alt="{{ emoji.name }}"
+      (mouseenter)="display($event)"
+      (mouseleave)="hide()"
+    />
+    <img
+      class="fade tooltip-item"
+      src="{{ emoji.src }}"
+      width="100px"
+      alt="{{ emoji.name }}"
+    />
+    <span class="ml-4">{{ emoji.name }}</span>
+    <div class="ml-4 btn-group float-right">
+      <button class="btn btn-primary" (click)="handleFavorite(emoji)">
+        <fa-icon icon="star"></fa-icon>
+      </button>
+      <button class="btn btn-danger" (click)="handleDeleted(emoji)">
+        <fa-icon icon="trash"></fa-icon>
+      </button>
+    </div>
+  </li>
+</ul>
+
+<ng-template #tolTemplate>Just another</ng-template>
+
+<div class="row">
+  <div class="col-xs-12 col-12">
+    <pagination
+      (pageChanged)="pageChanged($event)"
+      [totalItems]="items"
+      [rotate]="true"
+      [maxSize]="5"
+      [boundaryLinks]="true"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    ></pagination>
+  </div>
+</div>
