@@ -12,7 +12,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faTrash, faTrashRestore } from '@fortawesome/free-solid-svg-icons';
 import { PreviewImageComponent } from './preview-image/preview-image.component';
 import { EmojiListComponent } from './emoji-list/emoji-list.component';
 
@@ -36,6 +36,6 @@ import { EmojiListComponent } from './emoji-list/emoji-list.component';
 })
 export class AppModule {
   constructor() {
-    library.add(faStar, faTrash);
+    library.add(faStar, faTrash, faTrashRestore);
   }
 }

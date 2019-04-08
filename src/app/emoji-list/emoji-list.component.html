@@ -15,9 +15,10 @@
       alt="{{ emoji.name }}"
     />
     <span class="ml-4">{{ emoji.name }}</span>
-    <div class="ml-4 btn-group float-right">
+    <div class="ml-4 float-right">
       <button
-        class="btn btn-primary"
+        class="mr-1 btn btn-primary"
+        [hidden]="emoji.deleted"
         (click)="
           stateChange({
             item: emoji,
@@ -30,11 +31,16 @@
       </button>
       <button
         class="btn btn-danger"
+        [hidden]="emoji.favorite"
         (click)="
-          stateChange({ item: emoji, field: 'deleted', state: !emoji.deleted })
+          stateChange({
+            item: emoji,
+            field: 'deleted',
+            state: !emoji.deleted
+          })
         "
       >
-        <fa-icon icon="trash" [ngClass]="{ deleted: emoji.deleted }"></fa-icon>
+        <fa-icon [icon]="emoji.deleted ? 'trash-restore' : 'trash'"></fa-icon>
       </button>
     </div>
   </li>

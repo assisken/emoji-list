@@ -17,6 +17,7 @@ export class Emoji {
         this.favorite = state
         break
       case 'deleted':
+        this.favorite = false
         this.deleted = state
         break
       default:
