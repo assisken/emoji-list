@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { EmojiService } from '../emoji.service';
 import { Emoji } from '../type';
 import { ActivatedRoute } from '@angular/router';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination/public_api';
+import { StateChange } from '../emoji-list/emoji-list.component';
 
 @Component({
   selector: 'app-emojis',
@@ -11,97 +13,47 @@ import { ActivatedRoute } from '@angular/router';
 export class EmojisComponent implements OnInit {
   listType: 'fav' | 'del' | string
   emojis: Array<Emoji>
-  items = 0
-  perPage = 10;
-  page = 1;
-  preview?: Emoji
+  currentPage: number = 1
+  totalCount: number = 1000
 
   constructor(private emojiService: EmojiService, private route: ActivatedRoute) { }
 
-  private from() {
-    return this.perPage * (this.page - 1)
-  }
+  private fetchEmojis(page: number, itemsPerPage: number) {
+    const from = itemsPerPage * (page - 1)
+    const to = from + itemsPerPage
 
-  private to() {
-    return this.from() + this.perPage
-  }
-
-  private updateItems() {
-    console.log(this.listType)
     switch (this.listType) {
       case 'fav':
-        this.items = this.emojiService.favLength()
-        break
+        this.totalCount = this.emojiService.favLength()
+        return this.emojiService.getFavList(from, to)
       case 'del':
-        this.items = this.emojiService.delLength()
-        break
+        this.totalCount = this.emojiService.delLength()
+        return this.emojiService.getDelList(from, to)
       default:
-        this.items = this.emojiService.length()
-        break
+        this.totalCount = this.emojiService.length()
+        return this.emojiService.getEmojiList(from, to)
     }
   }
 
-  private fetchEmojis() {
-    switch (this.listType) {
-      case 'fav':
-        return this.emojiService.getFavList(this.from(), this.to())
-      case 'del':
-        return this.emojiService.getDelList(this.from(), this.to())
-      default:
-        return this.emojiService.getEmojiList(this.from(), this.to())
-    }
-  }
-
-  public handleFavorite(emoji: Emoji) {
-    if (emoji.favorite) {
-      this.emojiService.removeFromFavorite(emoji)
-    } else {
-      this.emojiService.addToFavorite(emoji)
-    }
-
-    this.fetchEmojis()
-    .then(res => {
-      this.emojis = res
-      this.updateItems()
-    })
-  }
-
-  public handleDeleted(emoji: Emoji) {
-    if (emoji.deleted) {
-      this.emojiService.removeFromDeleted(emoji)
-    } else {
-      this.emojiService.addToDeleted(emoji)
-    }
-
-    this.fetchEmojis()
-    .then(res => {
-      this.emojis = res
-      this.updateItems()
-    })
-  }
-
-  public pageChanged(event: any): void {
-    this.page = event.page;
-    this.fetchEmojis()
+  public handlePageChanged(event: PageChangedEvent): void {
+    this.currentPage = event.page
+    this.fetchEmojis(event.page, event.itemsPerPage)
       .then(res => this.emojis = res)
   }
 
+  public handleStateChange({ item, field, state }: StateChange<Emoji>) {
+    item.set(field, state)
+    this.totalCount = this.emojiService.length()
+    this.fetchEmojis(this.currentPage, 10)
+        .then(res => { this.emojis = res })
+  }
+
   ngOnInit() {
+    this.totalCount = this.emojiService.length()
     this.route.queryParamMap.subscribe(queryParams => {
       this.listType = queryParams.get("type")
-      this.fetchEmojis()
-      .then(res => {
-        this.emojis = res
-        this.updateItems()
-      })
+      this.fetchEmojis(this.currentPage, 10)
+        .then(res => { this.emojis = res })
     })
-  }
-
-  display(event) {
-    this.preview = { name: event.target.alt, src: event.target.src };
-  }
-
-  hide() {
-    this.preview = null
   }
 }

@@ -14,12 +14,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { PreviewImageComponent } from './preview-image/preview-image.component';
+import { EmojiListComponent } from './emoji-list/emoji-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EmojisComponent,
-    PreviewImageComponent
+    PreviewImageComponent,
+    EmojiListComponent
   ],
   imports: [
     BrowserModule,

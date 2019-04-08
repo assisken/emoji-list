@@ -1,0 +1,27 @@
+.tooltip1 {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip-item {
+  position: absolute;
+  visibility: hidden;
+  border: solid 0px white;
+  border-radius: 10%;
+  background-color: white;
+  z-index: 1070;
+}
+
+.tooltip1:hover + .tooltip-item {
+  visibility: visible;
+  opacity: 1;
+  z-index: 1070;
+}
+
+.favorite {
+  color: yellow;
+}
+
+.deleted {
+  color: red;
+}

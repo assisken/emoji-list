@@ -18,7 +18,7 @@ export class EmojiService {
     const prom = this.http.get<Object>('https://api.github.com/emojis', { observe: 'body' }).toPromise()
     const response = await prom
     for (const key of Object.keys(response)) {
-      this.emoji.push({ name: key, src: response[key] })
+      this.emoji.push(new Emoji(key, response[key]))
     }
   }
 
@@ -30,7 +30,7 @@ export class EmojiService {
   }
 
   public async getFavList(from: number, to: number) {
-    return this.emoji.filter(elem => elem.favorite).slice(from, to)
+    return this.emoji.filter(elem => !elem.deleted && elem.favorite).slice(from, to)
   }
 
   public async getDelList(from: number, to: number) {
