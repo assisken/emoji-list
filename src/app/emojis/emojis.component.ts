@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { EmojiService } from '../emoji.service';
-import { Emoji } from '../type';
-import { ActivatedRoute } from '@angular/router';
-import { PageChangedEvent } from 'ngx-bootstrap/pagination/public_api';
-import { StateChange } from '../emoji-list/emoji-list.component';
+import { Component, OnInit } from '@angular/core'
+import { EmojiService } from '../emoji.service'
+import { Emoji } from '../type'
+import { ActivatedRoute } from '@angular/router'
+import { PageChangedEvent } from 'ngx-bootstrap/pagination/public_api'
+import { StateChange } from '../emoji-list/emoji-list.component'
 
 @Component({
   selector: 'app-emojis',
@@ -13,8 +13,8 @@ import { StateChange } from '../emoji-list/emoji-list.component';
 export class EmojisComponent implements OnInit {
   listType: 'fav' | 'del' | string
   emojis: Array<Emoji>
-  currentPage: number = 1
-  totalCount: number = 1000
+  currentPage = 1
+  totalCount = 1000
 
   constructor(private emojiService: EmojiService, private route: ActivatedRoute) { }
 
@@ -51,7 +51,7 @@ export class EmojisComponent implements OnInit {
   ngOnInit() {
     this.totalCount = this.emojiService.length()
     this.route.queryParamMap.subscribe(queryParams => {
-      this.listType = queryParams.get("type")
+      this.listType = queryParams.get('type')
       this.fetchEmojis(this.currentPage, 10)
         .then(res => { this.emojis = res })
     })

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Emoji } from '../type';
-import { PageChangedEvent } from 'ngx-bootstrap/pagination/public_api';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { Emoji } from '../type'
+import { PageChangedEvent } from 'ngx-bootstrap/pagination/public_api'
 
 export interface StateChange<T> {
   item: T
@@ -16,8 +16,8 @@ export interface StateChange<T> {
 export class EmojiListComponent implements OnInit {
   @Input() emojiList: Array<Emoji>
   @Input() emojiCount: number
-  @Output() onPageChanged = new EventEmitter<PageChangedEvent>()
-  @Output() onStateChange = new EventEmitter<StateChange<Emoji>>()
+  @Output() pageChanged = new EventEmitter<PageChangedEvent>()
+  @Output() stateChanged = new EventEmitter<StateChange<Emoji>>()
   preview?: Emoji
 
   constructor() { }
@@ -25,16 +25,16 @@ export class EmojiListComponent implements OnInit {
   ngOnInit() {
   }
 
-  stateChange({ item, field, state } : StateChange<Emoji>) {
-    this.onStateChange.emit({ item, field, state })
+  _stateChanged({ item, field, state }: StateChange<Emoji>) {
+    this.stateChanged.emit({ item, field, state })
   }
 
-  pageChanged(pageChangedEvent: PageChangedEvent) {
-    this.onPageChanged.emit(pageChangedEvent)
+  _pageChanged(pageChangedEvent: PageChangedEvent) {
+    this.pageChanged.emit(pageChangedEvent)
   }
 
   display(emoji: Emoji) {
-    this.preview = emoji;
+    this.preview = emoji
   }
 
   hide() {

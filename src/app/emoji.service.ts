@@ -1,21 +1,20 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Emoji } from './type';
+import { Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { Emoji } from './type'
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmojiService {
-  private favCount: number = 0
-  private delCount: number = 0
+  private favCount = 0
+  private delCount = 0
   private emoji: Array<Emoji> = []
 
   constructor(private http: HttpClient) { }
 
   private async fetchEmojiList() {
     console.log('request sent')
-    const prom = this.http.get<Object>('https://api.github.com/emojis', { observe: 'body' }).toPromise()
+    const prom = this.http.get<object>('https://api.github.com/emojis', { observe: 'body' }).toPromise()
     const response = await prom
     for (const key of Object.keys(response)) {
       this.emoji.push(new Emoji(key, response[key]))
