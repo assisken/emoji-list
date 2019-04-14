@@ -1,5 +1,5 @@
 <ul class="list-group mb-2">
-  <li class="list-group-item " *ngFor="let emoji of emojiList">
+  <li class="list-group-item " *ngFor="let emoji of currentList()">
     <img
       class="tooltip1"
       src="{{ emoji.src }}"
@@ -46,12 +46,12 @@
   </li>
 </ul>
 
-<div class="row">
+<div *ngIf="emojiList.length !== 0" class="row">
   <div class="col-xs-12 col-12">
     <pagination
-      (pageChanged)="_pageChanged($event)"
-      [itemsPerPage]="10"
-      [totalItems]="emojiCount"
+      (pageChanged)="pageChanged($event)"
+      [itemsPerPage]="perPage"
+      [totalItems]="emojiList.length"
       [rotate]="true"
       [maxSize]="5"
       [boundaryLinks]="true"

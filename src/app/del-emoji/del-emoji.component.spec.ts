@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EmojisComponent } from './emojis.component';
+import { DelEmojiComponent } from './del-emoji.component';
 
-describe('EmojisComponent', () => {
-  let component: EmojisComponent;
-  let fixture: ComponentFixture<EmojisComponent>;
+describe('DelEmojiComponent', () => {
+  let component: DelEmojiComponent;
+  let fixture: ComponentFixture<DelEmojiComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EmojisComponent ]
+      declarations: [ DelEmojiComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EmojisComponent);
+    fixture = TestBed.createComponent(DelEmojiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

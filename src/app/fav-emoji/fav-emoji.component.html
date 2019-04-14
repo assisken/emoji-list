@@ -1,0 +1,10 @@
+<h1>Favorite emojies:</h1>
+
+<p *ngIf="emojies.length === 0">
+  You have no favorite emojies. Click on star button to add some.
+</p>
+<app-emoji-list
+  *ngIf="emojies.length !== 0"
+  [emojiList]="emojies"
+  (stateChanged)="handleStateChange($event)"
+></app-emoji-list>

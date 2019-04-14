@@ -1,71 +1,76 @@
-import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { Emoji } from './type'
+import {Injectable} from '@angular/core'
+import {HttpClient} from '@angular/common/http'
+import {Emoji} from './type'
+import {map} from 'rxjs/operators'
+import {from, Observable, Subject} from 'rxjs'
+import {StateChange} from './emoji-list/emoji-list.component'
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmojiService {
-  private favCount = 0
-  private delCount = 0
-  private emoji: Array<Emoji> = []
 
   constructor(private http: HttpClient) { }
+  private emojies: Array<Emoji> = []
+  private observable = new Subject<Emoji>()
+  private savedItems: Array<Emoji> = []
 
-  private async fetchEmojiList() {
-    console.log('request sent')
-    const prom = this.http.get<object>('https://api.github.com/emojis', { observe: 'body' }).toPromise()
-    const response = await prom
-    for (const key of Object.keys(response)) {
-      this.emoji.push(new Emoji(key, response[key]))
+  public updateEmoji({ item, field, state }: StateChange<Emoji>) {
+    item.set(field, state)
+    switch (state) {
+      case true:
+        this.savedItems.push(item)
+        break
+      case false:
+        const found = this.savedItems.find(it => it.name === item.name)
+        const index = this.savedItems.indexOf(found)
+        console.log(index)
+        this.savedItems.splice(index, 1)
+        break
     }
+    localStorage.setItem('savedItems', JSON.stringify(this.savedItems));
   }
 
-  public async getEmojiList(from: number, to: number): Promise<Emoji[]> {
-    if (this.emoji.length === 0) {
-      await this.fetchEmojiList()
+  public getEmojiList(): Observable<Emoji> {
+    if (this.savedItems.length === 0) {
+      const items = localStorage.getItem('savedItems')
+      if (items) {
+        this.savedItems = JSON.parse(items)
+      }
     }
-    return this.emoji.filter(elem => !elem.deleted).slice(from, to)
+
+    if (this.emojies.length === 0) {
+      this.fetchEmojiList()
+        .subscribe(
+          res => {
+            this.emojies = res
+            this.emojies.forEach(item => this.observable.next(item))
+            this.observable.complete()
+          },
+          err => this.observable.error(err)
+        )
+      return this.observable
+    }
+    return from(this.emojies)
   }
 
-  public async getFavList(from: number, to: number) {
-    return this.emoji.filter(elem => !elem.deleted && elem.favorite).slice(from, to)
+  private fetchEmojiList() {
+    return this.http.get<object>(
+      'https://api.github.com/emojis',
+      { observe: 'body' }
+      )
+      .pipe(
+        map(items => Object.keys(items).map(key => {
+          const item = this.updateBySaved(key)
+          if (item) {
+            return new Emoji(item.name, item.src, item.favorite, item.deleted)
+          }
+          return new Emoji(key, items[key])
+        })),
+      )
   }
 
-  public async getDelList(from: number, to: number) {
-    return this.emoji.filter(elem => elem.deleted).slice(from, to)
-  }
-
-  public length(): number {
-    return this.emoji.length
-  }
-
-  public favLength(): number {
-    return this.favCount
-  }
-
-  public delLength(): number {
-    console.log(this.delCount)
-    return this.delCount
-  }
-
-  public addToFavorite(emoji: Emoji): void {
-    emoji.favorite = true
-    this.favCount++
-  }
-
-  public removeFromFavorite(emoji: Emoji): void {
-    delete emoji.favorite
-    this.favCount--
-  }
-
-  public addToDeleted(emoji: Emoji): void {
-    emoji.deleted = true
-    this.delCount++
-  }
-
-  public removeFromDeleted(emoji: Emoji): void {
-    delete emoji.deleted
-    this.delCount--
+  private updateBySaved(name: string): Emoji | undefined {
+    return this.savedItems.find(item => item.name === name)
   }
 }

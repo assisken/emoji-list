@@ -1,0 +1,10 @@
+<h1>Deleted emojies:</h1>
+
+<p *ngIf="emojies.length === 0">
+  You have no deleted emojies. To delete click on trash button.
+</p>
+<app-emoji-list
+  *ngIf="emojies.length !== 0"
+  [emojiList]="emojies"
+  (stateChanged)="handleStateChange($event)"
+></app-emoji-list>
