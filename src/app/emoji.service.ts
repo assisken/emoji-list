@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core'
 import {HttpClient} from '@angular/common/http'
-import {Emoji} from './type'
+import {Emoji, EmojiType} from './type'
 import {map} from 'rxjs/operators'
 import {from, Observable, Subject} from 'rxjs'
-import {StateChange} from './emoji-list/emoji-list.component'
+import {EmojiTypeChange} from './emoji-list/emoji-list.component'
 
 @Injectable({
   providedIn: 'root'
@@ -15,20 +15,21 @@ export class EmojiService {
   private observable = new Subject<Emoji>()
   private savedItems: Array<Emoji> = []
 
-  public updateEmoji({ item, field, state }: StateChange<Emoji>) {
-    item.set(field, state)
-    switch (state) {
-      case true:
+  public updateEmoji({ item, newType }: EmojiTypeChange) {
+    item.type = newType
+    switch (newType) {
+      case EmojiType.Favorite:
+      case EmojiType.Deleted:
         this.savedItems.push(item)
         break
-      case false:
+      case EmojiType.None:
         const found = this.savedItems.find(it => it.name === item.name)
         const index = this.savedItems.indexOf(found)
         console.log(index)
         this.savedItems.splice(index, 1)
         break
     }
-    localStorage.setItem('savedItems', JSON.stringify(this.savedItems));
+    localStorage.setItem('savedItems', JSON.stringify(this.savedItems))
   }
 
   public getEmojiList(): Observable<Emoji> {
@@ -55,15 +56,12 @@ export class EmojiService {
   }
 
   private fetchEmojiList() {
-    return this.http.get<object>(
-      'https://api.github.com/emojis',
-      { observe: 'body' }
-      )
+    return this.http.get<object>('https://api.github.com/emojis')
       .pipe(
         map(items => Object.keys(items).map(key => {
           const item = this.updateBySaved(key)
           if (item) {
-            return new Emoji(item.name, item.src, item.favorite, item.deleted)
+            return new Emoji(item.name, item.src, item.type)
           }
           return new Emoji(key, items[key])
         })),

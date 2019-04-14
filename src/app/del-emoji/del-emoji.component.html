@@ -6,5 +6,5 @@
 <app-emoji-list
   *ngIf="emojies.length !== 0"
   [emojiList]="emojies"
-  (stateChanged)="handleStateChange($event)"
+  (typeChanged)="handleStateChange($event)"
 ></app-emoji-list>

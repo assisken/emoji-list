@@ -18,29 +18,17 @@
     <div class="ml-4 float-right">
       <button
         class="mr-1 btn btn-primary"
-        [hidden]="emoji.deleted"
-        (click)="
-          _stateChanged({
-            item: emoji,
-            field: 'favorite',
-            state: !emoji.favorite
-          })
-        "
+        [hidden]="emoji.deleted()"
+        (click)="_typeChanged(emoji, 'favorite')"
       >
-        <fa-icon icon="star" [ngClass]="{ favorite: emoji.favorite }"></fa-icon>
+        <fa-icon icon="star" [ngClass]="{ favorite: emoji.favorite() }"></fa-icon>
       </button>
       <button
         class="btn btn-danger"
-        [hidden]="emoji.favorite"
-        (click)="
-          _stateChanged({
-            item: emoji,
-            field: 'deleted',
-            state: !emoji.deleted
-          })
-        "
+        [hidden]="emoji.favorite()"
+        (click)="_typeChanged(emoji, 'deleted')"
       >
-        <fa-icon [icon]="emoji.deleted ? 'trash-restore' : 'trash'"></fa-icon>
+        <fa-icon [icon]="emoji.deleted() ? 'trash-restore' : 'trash'"></fa-icon>
       </button>
     </div>
   </li>

@@ -8,5 +8,5 @@
 <app-emoji-list
   *ngIf="!loading"
   [emojiList]="emojies"
-  (stateChanged)="handleStateChange($event)"
+  (typeChanged)="handleStateChange($event)"
 ></app-emoji-list>
