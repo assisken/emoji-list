@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core'
 import {EmojiService} from '../emoji.service'
 import {Emoji, EmojiType} from '../type'
 import {filter} from 'rxjs/operators'
-import {EmojiTypeChange} from '../emoji-list/emoji-list.component'
 
 @Component({
   selector: 'app-all-emoji',
@@ -15,20 +14,18 @@ export class AllEmojiComponent implements OnInit {
 
   constructor(private emojiService: EmojiService) { }
 
-  public handleStateChange({ item, newType }: EmojiTypeChange) {
-    if (item.type === newType) {
-      newType = EmojiType.None
+  public delete(emoji: Emoji) {
+    const index = this.emojies.indexOf(emoji)
+    if (index > -1) {
+      this.emojies.splice(index, 1)
     }
 
-    console.log(newType.toString())
-    if (newType === EmojiType.Deleted) {
-      const index = this.emojies.indexOf(item)
-      if (index > -1) {
-        this.emojies.splice(index, 1)
-      }
-    }
+    this.emojiService.updateEmoji(emoji, EmojiType.Deleted)
+  }
 
-    this.emojiService.updateEmoji({ item, newType })
+  public favorite(emoji: Emoji) {
+    const newType = emoji.favorite() ? EmojiType.None : EmojiType.Favorite
+    this.emojiService.updateEmoji(emoji, newType)
   }
 
   ngOnInit() {

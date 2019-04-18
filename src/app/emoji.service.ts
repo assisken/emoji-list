@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http'
 import {Emoji, EmojiType} from './type'
 import {map} from 'rxjs/operators'
 import {from, Observable, Subject} from 'rxjs'
-import {EmojiTypeChange} from './emoji-list/emoji-list.component'
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +14,15 @@ export class EmojiService {
   private observable = new Subject<Emoji>()
   private savedItems: Array<Emoji> = []
 
-  public updateEmoji({ item, newType }: EmojiTypeChange) {
-    item.type = newType
+  public updateEmoji(emoji, newType) {
+    emoji.type = newType
     switch (newType) {
       case EmojiType.Favorite:
       case EmojiType.Deleted:
-        this.savedItems.push(item)
+        this.savedItems.push(emoji)
         break
       case EmojiType.None:
-        const found = this.savedItems.find(it => it.name === item.name)
+        const found = this.savedItems.find(it => it.name === emoji.name)
         const index = this.savedItems.indexOf(found)
         console.log(index)
         this.savedItems.splice(index, 1)

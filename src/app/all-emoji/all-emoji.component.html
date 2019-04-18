@@ -8,5 +8,23 @@
 <app-emoji-list
   *ngIf="!loading"
   [emojiList]="emojies"
+  [buttonTemplate]="buttons"
   (typeChanged)="handleStateChange($event)"
 ></app-emoji-list>
+
+<ng-template #buttons let-emoji="emoji">
+  <button
+    class="mr-1 btn btn-primary"
+    [hidden]="emoji.deleted()"
+    (click)="favorite(emoji)"
+  >
+    <fa-icon icon="star" [ngClass]="{ favorite: emoji.favorite() }"></fa-icon>
+  </button>
+  <button
+    class="btn btn-danger"
+    [hidden]="emoji.favorite()"
+    (click)="delete(emoji)"
+  >
+    <fa-icon [icon]="emoji.deleted() ? 'trash-restore' : 'trash'"></fa-icon>
+  </button>
+</ng-template>

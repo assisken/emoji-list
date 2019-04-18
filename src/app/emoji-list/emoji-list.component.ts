@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core'
+import {Component, OnInit, Input, Output, EventEmitter, TemplateRef} from '@angular/core'
 import {Emoji, EmojiType} from '../type'
 import { PageChangedEvent } from 'ngx-bootstrap/pagination/public_api'
 
@@ -14,30 +14,14 @@ export interface EmojiTypeChange {
 })
 export class EmojiListComponent implements OnInit {
   @Input() emojiList: Array<Emoji>
-  @Output() typeChanged = new EventEmitter<EmojiTypeChange>()
+  @Input() buttonTemplate: TemplateRef<any>
   preview?: Emoji
   currentPage = 1
   perPage = 10
 
   constructor() { }
 
-  ngOnInit() {
-  }
-
-  _typeChanged(item: Emoji, type: 'favorite' | 'deleted') {
-    let newType: EmojiType
-    switch (type) {
-      case 'favorite':
-        newType = EmojiType.Favorite
-        break
-      case 'deleted':
-        newType = EmojiType.Deleted
-        break
-      default:
-        newType = EmojiType.None
-    }
-    this.typeChanged.emit({ item, newType })
-  }
+  ngOnInit() { }
 
   currentList() {
     const from = this.perPage * (this.currentPage - 1)

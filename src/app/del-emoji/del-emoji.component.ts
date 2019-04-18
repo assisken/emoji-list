@@ -14,14 +14,13 @@ export class DelEmojiComponent implements OnInit {
 
   constructor(private emojiService: EmojiService) { }
 
-  public handleStateChange({ item, newType }: EmojiTypeChange) {
-    const index = this.emojies.indexOf(item)
+  public delete(emoji: Emoji) {
+    const index = this.emojies.indexOf(emoji)
     if (index > -1) {
       this.emojies.splice(index, 1)
     }
 
-    newType = EmojiType.None
-    this.emojiService.updateEmoji({ item, newType })
+    this.emojiService.updateEmoji(emoji, EmojiType.None)
   }
 
   ngOnInit() {

@@ -6,5 +6,15 @@
 <app-emoji-list
   *ngIf="emojies.length !== 0"
   [emojiList]="emojies"
-  (typeChanged)="handleStateChange($event)"
+  [buttonTemplate]="buttons"
 ></app-emoji-list>
+
+<ng-template #buttons let-emoji="emoji">
+  <button
+    class="btn btn-danger"
+    [hidden]="emoji.favorite()"
+    (click)="delete(emoji)"
+  >
+    <fa-icon [icon]="emoji.deleted() ? 'trash-restore' : 'trash'"></fa-icon>
+  </button>
+</ng-template>
